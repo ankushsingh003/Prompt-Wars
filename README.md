@@ -2,7 +2,7 @@
 
 VoteIQ is a premium, AI-powered election guide designed to simplify the democratic process in India. From voter registration to result declaration, VoteIQ provides an intelligent, interactive, and visually stunning experience for citizens.
 
-![VoteIQ Header](https://raw.githubusercontent.com/ankushsingh003/Prompt-Wars/main/voteiq-app/src/assets/hero.png) *(Placeholder for your project banner)*
+![VoteIQ Header](https://raw.githubusercontent.com/ankushsingh003/Prompt-Wars/main/voteiq-app/src/assets/hero.png) 
 
 ## 🌟 Key Features
 
