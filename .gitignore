@@ -1,0 +1,17 @@
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+.env
+.env.*
+!.env.example
+.vscode
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+C:/Users/ankush kumar singh/.gemini/antigravity/brain/35c0600d-f8d3-4404-8e2a-1c21d1a859da/*
+C:/Users/ankush kumar singh/.gemini/antigravity/knowledge/*
