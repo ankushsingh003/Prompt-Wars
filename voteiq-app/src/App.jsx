@@ -27,6 +27,15 @@ const QUESTIONS = [
   { q: "Which article of the Indian Constitution establishes universal adult franchise?", opts: ["Article 19","Article 21","Article 326","Article 352"], ans: 2, exp: "Article 326 of the Indian Constitution establishes the right to vote for all adult citizens, regardless of religion, race, caste, sex, or place of birth — the basis of universal adult franchise." },
 ];
 
+const PARTIES = [
+  { name: 'Indian National Congress', symbol: '✋', color: '#00BFFF' },
+  { name: 'Bharatiya Janata Party', symbol: '🪷', color: '#FF9933' },
+  { name: 'Aam Aadmi Party', symbol: '🧹', color: '#0000FF' },
+  { name: 'Bahujan Samaj Party', symbol: '🐘', color: '#000080' },
+  { name: 'Communist Party of India (M)', symbol: '☭', color: '#DE0000' },
+  { name: 'NOTA', symbol: '🚫', color: '#333' }
+];
+
 function App() {
   // Navigation State
   const [activeNav, setActiveNav] = useState('hero');
@@ -46,6 +55,52 @@ function App() {
   const [answered, setAnswered] = useState(false);
   const [selectedOpt, setSelectedOpt] = useState(null);
   const [showResult, setShowResult] = useState(false);
+
+  // Blockchain State
+  const [blockchain, setBlockchain] = useState([]);
+  const [isMining, setIsMining] = useState(false);
+  const [voterId, setVoterId] = useState('');
+  const [selectedParty, setSelectedParty] = useState(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const calculateHash = async (index, timestamp, data, previousHash) => {
+    const msgBuffer = new TextEncoder().encode(index + timestamp + JSON.stringify(data) + previousHash);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  };
+
+  const initBlockchain = async () => {
+    if (blockchain.length > 0) return;
+    const timestamp = new Date().toISOString();
+    const data = { message: "Genesis Block - VoteIQ Ledger Initialized" };
+    const hash = await calculateHash(0, timestamp, data, "0");
+    setBlockchain([{ index: 0, timestamp, data, previousHash: "0", hash }]);
+  };
+
+  useEffect(() => {
+    initBlockchain();
+  }, []);
+
+  const castVote = async () => {
+    if (!voterId || !selectedParty || isMining) return;
+    setIsMining(true);
+    
+    const index = blockchain.length;
+    const timestamp = new Date().toISOString();
+    const data = { voterId, party: selectedParty.name, action: "Voted" };
+    const previousHash = blockchain[blockchain.length - 1].hash;
+    const hash = await calculateHash(index, timestamp, data, previousHash);
+    
+    setTimeout(() => {
+      setBlockchain(prev => [...prev, { index, timestamp, data, previousHash, hash }]);
+      setIsMining(false);
+      setShowSuccess(true);
+      setVoterId('');
+      setSelectedParty(null);
+      setTimeout(() => setShowSuccess(false), 3000);
+    }, 1500); // Simulate mining delay
+  };
 
   // Intersection Observers
   useEffect(() => {
@@ -71,7 +126,7 @@ function App() {
 
   // Scroll active nav
   useEffect(() => {
-    const sections = ['hero', 'process', 'timeline', 'chatbot', 'quiz'];
+    const sections = ['hero', 'process', 'timeline', 'blockchain', 'chatbot', 'quiz'];
     const handleScroll = () => {
       let current = '';
       sections.forEach(id => {
@@ -189,6 +244,7 @@ function App() {
           <button className={`nav-tab ${activeNav === 'hero' ? 'active' : ''}`} onClick={() => scrollToSection('hero')}>Home</button>
           <button className={`nav-tab ${activeNav === 'process' ? 'active' : ''}`} onClick={() => scrollToSection('process')}>Process</button>
           <button className={`nav-tab ${activeNav === 'timeline' ? 'active' : ''}`} onClick={() => scrollToSection('timeline')}>Timeline</button>
+          <button className={`nav-tab ${activeNav === 'blockchain' ? 'active' : ''}`} onClick={() => scrollToSection('blockchain')}>Blockchain</button>
           <button className={`nav-tab ${activeNav === 'chatbot' ? 'active' : ''}`} onClick={() => scrollToSection('chatbot')}>Ask AI</button>
           <button className={`nav-tab ${activeNav === 'quiz' ? 'active' : ''}`} onClick={() => scrollToSection('quiz')}>Quiz</button>
         </div>
@@ -316,6 +372,101 @@ function App() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <div className="tricolor"><div className="s"></div><div className="w"></div><div className="g"></div></div>
+
+      {/* BLOCKCHAIN SECURE VOTING */}
+      <section id="blockchain">
+        <div className="section-tag">Cyber Security</div>
+        <h2 className="section-title fade-up">Secure Blockchain Voting</h2>
+        <p className="section-sub fade-up">Integrating Distributed Ledger Technology to ensure vote integrity, transparency, and individual privacy.</p>
+        
+        <div className="bc-layout">
+          {/* Vote Interface */}
+          <div className="bc-card vote-panel fade-up">
+            <h3 className="bc-panel-title">Cast Your Secure Vote</h3>
+            <p className="bc-panel-desc">Your vote is hashed and linked to the previous block, making it immutable and tamper-proof.</p>
+            
+            <div className="bc-form">
+              <label className="bc-label">Voter Unique ID (Simulated)</label>
+              <input 
+                className="bc-input" 
+                placeholder="Enter Voter ID (e.g. EPIC12345)" 
+                value={voterId}
+                onChange={(e) => setVoterId(e.target.value)}
+              />
+              
+              <label className="bc-label">Select Party</label>
+              <div className="party-selector">
+                {PARTIES.map((p, i) => (
+                  <button 
+                    key={i} 
+                    className={`party-btn ${selectedParty?.name === p.name ? 'active' : ''}`}
+                    onClick={() => setSelectedParty(p)}
+                  >
+                    <span className="party-symbol">{p.symbol}</span>
+                    <span className="party-name">{p.name}</span>
+                  </button>
+                ))}
+              </div>
+              
+              <button 
+                className={`btn-primary bc-vote-btn ${isMining ? 'mining' : ''}`}
+                onClick={castVote}
+                disabled={!voterId || !selectedParty || isMining}
+              >
+                {isMining ? (
+                  <><span className="spinner"></span> Mining Block...</>
+                ) : (
+                  <>Cast Hashed Vote 🔒</>
+                )}
+              </button>
+              
+              {showSuccess && (
+                <div className="bc-success-msg">
+                  ✅ Vote recorded securely on the blockchain!
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Ledger Visualization */}
+          <div className="bc-ledger-panel fade-up">
+            <div className="bc-ledger-header">
+              <h3 className="bc-panel-title">Live Blockchain Ledger</h3>
+              <div className="bc-status">
+                <span className="status-dot"></span> Active Nodes: 12
+              </div>
+            </div>
+            <div className="bc-blocks">
+              {[...blockchain].reverse().map((block, i) => (
+                <div className="bc-block" key={block.hash}>
+                  <div className="bc-block-head">
+                    <span className="bc-block-idx">Block #{block.index}</span>
+                    <span className="bc-block-time">{new Date(block.timestamp).toLocaleTimeString()}</span>
+                  </div>
+                  <div className="bc-block-data">
+                    <div className="bc-data-item"><strong>Voter:</strong> <span>{block.data.voterId || 'SYSTEM'}</span></div>
+                    <div className="bc-data-item"><strong>Party:</strong> <span>{block.data.party || 'N/A'}</span></div>
+                    <div className="bc-data-item"><strong>Action:</strong> <span>{block.data.action || block.data.message}</span></div>
+                  </div>
+                  <div className="bc-hashes">
+                    <div className="bc-hash-item">
+                      <label>Previous Hash</label>
+                      <code title={block.previousHash}>{block.previousHash.substring(0, 16)}...</code>
+                    </div>
+                    <div className="bc-hash-item">
+                      <label>Block Hash</label>
+                      <code>{block.hash.substring(0, 16)}...</code>
+                    </div>
+                  </div>
+                  {i < blockchain.length - 1 && <div className="bc-link"></div>}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
