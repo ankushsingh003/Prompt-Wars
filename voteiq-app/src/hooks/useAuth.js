@@ -16,12 +16,20 @@ export function useAuth() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!auth || !auth.onAuthStateChanged) {
+      setLoading(false);
+      return;
+    }
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        // Fetch extra profile from Firestore
-        const userRef = doc(db, "users", firebaseUser.uid);
-        const snap = await getDoc(userRef);
-        setUser({ ...firebaseUser, profile: snap.exists() ? snap.data() : {} });
+      if (firebaseUser && db) {
+        try {
+          const userRef = doc(db, "users", firebaseUser.uid);
+          const snap = await getDoc(userRef);
+          setUser({ ...firebaseUser, profile: snap.exists() ? snap.data() : {} });
+        } catch (e) {
+          console.error("Error fetching user profile:", e);
+          setUser(firebaseUser);
+        }
       } else {
         setUser(null);
       }

@@ -13,11 +13,32 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+let app;
+let auth;
+let db;
+let analytics;
+const googleProvider = new GoogleAuthProvider();
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const analytics = getAnalytics(app);
-export const googleProvider = new GoogleAuthProvider();
+// Safe initialization
+try {
+  if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY") {
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
+    // Analytics is optional and can fail in local dev
+    try { analytics = getAnalytics(app); } catch (e) { console.warn("Analytics not initialized"); }
+    console.log("✅ Firebase Initialized");
+  } else {
+    console.warn("⚠️ Firebase API Key missing. Auth and Firestore will be disabled.");
+    // Fallback to null or dummy objects to prevent crashes
+    app = {};
+    auth = { onAuthStateChanged: (cb) => { cb(null); return () => {}; } };
+    db = {};
+  }
+} catch (error) {
+  console.error("❌ Firebase Init Error:", error.message);
+  auth = { onAuthStateChanged: (cb) => { cb(null); return () => {}; } };
+}
 
+export { auth, db, analytics, googleProvider };
 export default app;

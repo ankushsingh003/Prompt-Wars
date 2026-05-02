@@ -341,10 +341,7 @@ function App() {
       <div className="tricolor"><div className="s"></div><div className="w"></div><div className="g"></div></div>
 
       {/* BLOCKCHAIN SECURE VOTING */}
-      {/* <VotingPanel /> */}
-      <div style={{ textAlign: 'center', padding: '40px', background: 'rgba(255,255,255,0.05)', borderRadius: '16px', border: '1px dashed rgba(255,255,255,0.1)' }}>
-        <p style={{ color: '#aaa' }}>Voting Panel is being updated. Please wait...</p>
-      </div>
+          <VotingPanel />
 
 
       <div className="tricolor"><div className="s"></div><div className="w"></div><div className="g"></div></div>
