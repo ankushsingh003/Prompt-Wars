@@ -72,7 +72,7 @@ function App() {
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
     }, { threshold: 0.2 });
 
-    document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
+    document.querySelectorAll('section, .fade-up').forEach(el => fadeObs.observe(el));
     document.querySelectorAll('.tl-item').forEach((el, i) => {
       el.style.transitionDelay = `${i * 0.1}s`;
       tlObs.observe(el);
