@@ -1,13 +1,8 @@
 import { useState, useCallback } from "react";
 import { Contract, solidityPackedKeccak256 } from "ethers";
 import axios from "axios";
-// Import contract data if it exists, otherwise use empty object
-let contractData;
-try {
-  contractData = require("../contracts/VotingContract.json");
-} catch (e) {
-  contractData = { address: "0x0000000000000000000000000000000000000000", abi: [] };
-}
+// Import contract data - Vite supports JSON imports natively
+import contractData from "../contracts/VotingContract.json";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
