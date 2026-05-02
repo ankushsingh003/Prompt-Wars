@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
-import { useWallet } from "../hooks/useWallet";
-import { useVoting } from "../hooks/useVoting";
+import { useAuth } from "../hooks/useAuth";
 
 const PARTIES = [
   { name: "Indian National Congress", symbol: "✋", color: "#00BFFF", candidateId: 1 },
@@ -10,9 +8,10 @@ const PARTIES = [
   { name: "NOTA",                      symbol: "🚫", color: "#555",   candidateId: 5 },
 ];
 
-const ELECTION_ID = 1; // Set to your deployed election ID
+const ELECTION_ID = 1;
 
 export default function VotingPanel() {
+  const { user, signInWithGoogle } = useAuth();
   const { account, signer, provider, error: walletError, loading, connect } = useWallet();
   const { castVoteRelay, getResults, txHash, txStatus, isSubmitting } = useVoting(signer, provider);
 
@@ -34,11 +33,13 @@ export default function VotingPanel() {
   }, [provider, getResults]);
 
   const handleVote = async () => {
-    if (!selected) return;
+    if (!selected || !user) return;
     try {
-      await castVoteRelay(ELECTION_ID, selected.candidateId);
+      // Get fresh Firebase Token
+      const token = await user.getIdToken();
+      await castVoteRelay(ELECTION_ID, selected.candidateId, token);
+      
       setHasVotedAlready(true);
-      // Refresh results
       const res = await getResults(ELECTION_ID);
       setResults(res);
     } catch (e) {
@@ -52,11 +53,23 @@ export default function VotingPanel() {
       <h2 className="section-title">Cast Your Secure Vote</h2>
       <p className="section-sub">Your vote is recorded permanently on Polygon. One wallet = one vote.</p>
 
-      {/* Wallet connection */}
-      {!account ? (
+      {/* 1. Firebase Login */}
+      {!user ? (
         <div className="bc-connect-prompt">
+           <button className="btn-primary" onClick={signInWithGoogle}>
+            🔑 Step 1: Sign in with Google
+          </button>
+          <p style={{ marginTop: '10px', fontSize: '12px', color: 'var(--ink-3)' }}>
+            Sign in to verify your identity before voting.
+          </p>
+        </div>
+      ) : !account ? (
+        <div className="bc-connect-prompt">
+          <div style={{ marginBottom: '15px', fontSize: '14px' }}>
+            👋 Hello, <strong>{user.displayName}</strong>!
+          </div>
           <button className="btn-primary" onClick={connect} disabled={loading}>
-            {loading ? "Connecting..." : "🦊 Connect MetaMask to Vote"}
+            {loading ? "Connecting..." : "🦊 Step 2: Connect MetaMask"}
           </button>
           {walletError && <p className="error-msg">{walletError}</p>}
         </div>

@@ -34,8 +34,9 @@ export function useVoting(signer, provider) {
   }, [signer]);
 
   // OPTION B: Meta-tx relay — backend pays gas (better UX, voter needs no MATIC)
-  const castVoteRelay = useCallback(async (electionId, candidateId) => {
+  const castVoteRelay = useCallback(async (electionId, candidateId, firebaseToken) => {
     if (!signer) throw new Error("Wallet not connected");
+    if (!firebaseToken) throw new Error("Authentication required");
     setIsSubmitting(true); setTxStatus("pending");
     try {
       const voterAddress = await signer.getAddress();
@@ -47,9 +48,9 @@ export function useVoting(signer, provider) {
       );
       const signature = await signer.signMessage(msgHash);
 
-      // Send to backend for relay
+      // Send to backend for relay with Firebase Auth
       const { data } = await axios.post(`${API}/api/votes/cast`, {
-        electionId, candidateId, voterAddress, signature
+        electionId, candidateId, voterAddress, signature, firebaseToken
       });
 
       setTxHash(data.txHash);
