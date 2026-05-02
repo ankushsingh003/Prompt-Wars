@@ -2,7 +2,33 @@
 
 VoteIQ is a premium, AI-powered election guide designed to simplify the democratic process in India. Now integrated with a **Full-Stack Blockchain Voting System**, VoteIQ provides a secure, transparent, and immutable platform for decentralized voting.
 
-![VoteIQ Header](https://raw.githubusercontent.com/ankushsingh003/Prompt-Wars/main/voteiq-app/src/assets/hero.png) 
+## 🏗️ System Architecture
+
+```mermaid
+graph TD
+    subgraph Client ["Frontend (React + Ethers.js)"]
+        U[User] -->|Connects Wallet| MM[MetaMask]
+        U -->|Selects Candidate| VP[Voting Panel]
+        VP -->|Signs Vote| MM
+    end
+
+    subgraph Server ["Backend (Node.js + Express)"]
+        BS[Blockchain Service]
+        AR[Auth Routes]
+        VR[Voter Registry - MongoDB]
+    end
+
+    subgraph Network ["Blockchain (Polygon Mumbai)"]
+        SC[Voting Smart Contract]
+    end
+
+    MM -->|Sends Signature| AR
+    AR -->|Verifies Voter| VR
+    AR -->|Forward Transaction| BS
+    BS -->|Relays Vote| SC
+    SC -->|Confirms Block| BS
+    SC -.->|Read Live Results| VP
+```
 
 ## 🌟 Key Features
 
