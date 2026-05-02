@@ -37,6 +37,8 @@ const PARTIES = [
 ];
 
 import VotingPanel from './components/VotingPanel';
+import AuthModal from './components/AuthModal';
+import { useAuth } from './hooks/useAuth';
 import { getFallbackResponse, getQuizFeedback } from './utils/electionUtils';
 
 function App() {
@@ -58,6 +60,8 @@ function App() {
   const [answered, setAnswered] = useState(false);
   const [selectedOpt, setSelectedOpt] = useState(null);
   const [showResult, setShowResult] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const { user, logout } = useAuth();
 
   // Intersection Observers
   useEffect(() => {
@@ -185,9 +189,19 @@ function App() {
           <button aria-label="Navigate to Secure Voting" className={`nav-tab ${activeNav === 'secure-voting' ? 'active' : ''}`} onClick={() => scrollToSection('secure-voting')}>Secure Voting</button>
           <button aria-label="Navigate to Ask AI" className={`nav-tab ${activeNav === 'chatbot' ? 'active' : ''}`} onClick={() => scrollToSection('chatbot')}>Ask AI</button>
           <button aria-label="Navigate to Quiz" className={`nav-tab ${activeNav === 'quiz' ? 'active' : ''}`} onClick={() => scrollToSection('quiz')}>Quiz</button>
+          
+          {user ? (
+            <button aria-label="Logout" className="nav-tab logout-btn" onClick={logout}>
+              <span className="user-initial">{user.displayName?.[0] || 'U'}</span> Logout
+            </button>
+          ) : (
+            <button aria-label="Open Login Modal" className="nav-tab login-btn" onClick={() => setShowAuthModal(true)}>Login</button>
+          )}
         </div>
         <div className="nav-badge">🇮🇳 India 2026</div>
       </nav>
+
+      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
 
       {/* HERO */}
       <section className="hero" id="hero">

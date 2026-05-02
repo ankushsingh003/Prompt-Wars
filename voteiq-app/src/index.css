@@ -491,3 +491,38 @@ footer p{font-size:13px;line-height:1.8;}
   .nav-tabs{display:none;}
   .hero-stats{gap:24px;}
 }
+
+/* --- Auth Navigation Styles --- */
+.login-btn {
+  background: linear-gradient(135deg, #FF9933, #ffb366) !important;
+  color: white !important;
+  border-radius: 20px !important;
+  padding: 6px 16px !important;
+  margin-left: 10px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 12px rgba(255, 153, 51, 0.3);
+}
+.logout-btn {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #ff6b6b !important;
+  border: 1px solid rgba(255, 107, 107, 0.2) !important;
+  border-radius: 20px !important;
+  padding: 6px 16px !important;
+  margin-left: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+.user-initial {
+  background: #FF9933;
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 800;
+}
+
