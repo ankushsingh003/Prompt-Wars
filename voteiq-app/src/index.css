@@ -26,7 +26,7 @@
   --shadow-lg: 0 12px 48px rgba(0,0,0,0.12);
 }
 
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0; outline: 1px solid rgba(255,0,0,0.3) !important;}
 html{scroll-behavior:smooth;}
 body{background:var(--white);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.6;overflow-x:hidden;}
 a{color:inherit;text-decoration:none;}
@@ -34,8 +34,8 @@ button{cursor:pointer;font-family:var(--font-body);}
 
 /* ── ANIMATIONS ── */
 .fade-up {
-  opacity: 0;
-  transform: translateY(30px);
+  opacity: 1; /* Forced visible for debugging */
+  transform: translateY(0);
   transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .fade-up.visible {
