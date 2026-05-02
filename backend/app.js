@@ -18,16 +18,19 @@ app.use("/api/votes",     require("./routes/votes"));
 // Health check
 app.get("/health", (req, res) => res.json({ status: "ok", chain: "Polygon" }));
 
-// Connect DB & start
-if (process.env.MONGODB_URI) {
-  mongoose.connect(process.env.MONGODB_URI)
+// ─── Database Connection ─────────────────────────────────────────
+const mongoUri = process.env.MONGODB_URI;
+const isValidMongo = mongoUri && (mongoUri.startsWith("mongodb://") || mongoUri.startsWith("mongodb+srv://"));
+
+if (isValidMongo) {
+  mongoose.connect(mongoUri)
     .then(() => {
-      console.log("Connected to MongoDB");
+      console.log("✅ Connected to MongoDB");
       app.listen(4000, () => console.log("🚀 Backend running on port 4000"));
     })
-    .catch(console.error);
+    .catch(err => console.error("❌ MongoDB connection error:", err));
 } else {
-  console.warn("MONGODB_URI not found. Starting server without MongoDB...");
+  console.warn("⚠️ MONGODB_URI is invalid or a placeholder. Running without database persistence.");
   app.listen(4000, () => console.log("🚀 Backend running on port 4000 (no DB)"));
 }
 
