@@ -11,9 +11,16 @@ try {
 const provider = new ethers.JsonRpcProvider(process.env.ALCHEMY_URL || "https://rpc-mumbai.maticvigil.com");
 
 // Signer: backend wallet (for relaying gas)
-const relayerWallet = process.env.RELAYER_PRIVATE_KEY 
-  ? new ethers.Wallet(process.env.RELAYER_PRIVATE_KEY, provider)
+const relayerKey = process.env.RELAYER_PRIVATE_KEY;
+const isValidRelayerKey = relayerKey && relayerKey.startsWith("0x") && relayerKey.length === 66;
+
+const relayerWallet = isValidRelayerKey 
+  ? new ethers.Wallet(relayerKey, provider)
   : null;
+
+if (!isValidRelayerKey) {
+  console.warn("⚠️ RELAYER_PRIVATE_KEY is invalid or a placeholder. Secure voting relay is disabled.");
+}
 
 // Contract instances
 const contractRead  = new ethers.Contract(contractData.address, contractData.abi, provider);
