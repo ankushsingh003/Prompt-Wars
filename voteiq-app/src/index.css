@@ -288,7 +288,7 @@ section{padding:100px 5%;position:relative;}
 }
 
 /* ── BLOCKCHAIN ── */
-#blockchain { background: var(--white); }
+#secure-voting { background: var(--white); }
 .bc-voting-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;

@@ -47,9 +47,9 @@ export default function VotingPanel() {
   };
 
   return (
-    <section id="blockchain" className="blockchain-section">
+    <section id="secure-voting" className="blockchain-section">
       <div className="section-tag">Decentralised Voting</div>
-      <h2 className="section-title">Cast Your Vote on Blockchain</h2>
+      <h2 className="section-title">Cast Your Secure Vote</h2>
       <p className="section-sub">Your vote is recorded permanently on Polygon. One wallet = one vote.</p>
 
       {/* Wallet connection */}
@@ -92,7 +92,7 @@ export default function VotingPanel() {
                   disabled={!selected || isSubmitting}
                   style={{ marginTop: '20px' }}
                 >
-                  {isSubmitting ? "⏳ Submitting to blockchain..." : "Cast Vote 🔒"}
+                  {isSubmitting ? "⏳ Processing secure vote..." : "Cast Secure Vote 🔒"}
                 </button>
               </>
             ) : (

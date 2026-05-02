@@ -82,7 +82,7 @@ function App() {
 
   // Scroll active nav
   useEffect(() => {
-    const sections = ['hero', 'process', 'timeline', 'blockchain', 'chatbot', 'quiz'];
+    const sections = ['hero', 'process', 'timeline', 'secure-voting', 'chatbot', 'quiz'];
     const handleScroll = () => {
       let current = '';
       sections.forEach(id => {
@@ -200,7 +200,7 @@ function App() {
           <button className={`nav-tab ${activeNav === 'hero' ? 'active' : ''}`} onClick={() => scrollToSection('hero')}>Home</button>
           <button className={`nav-tab ${activeNav === 'process' ? 'active' : ''}`} onClick={() => scrollToSection('process')}>Process</button>
           <button className={`nav-tab ${activeNav === 'timeline' ? 'active' : ''}`} onClick={() => scrollToSection('timeline')}>Timeline</button>
-          <button className={`nav-tab ${activeNav === 'blockchain' ? 'active' : ''}`} onClick={() => scrollToSection('blockchain')}>Blockchain</button>
+          <button className={`nav-tab ${activeNav === 'secure-voting' ? 'active' : ''}`} onClick={() => scrollToSection('secure-voting')}>Secure Voting</button>
           <button className={`nav-tab ${activeNav === 'chatbot' ? 'active' : ''}`} onClick={() => scrollToSection('chatbot')}>Ask AI</button>
           <button className={`nav-tab ${activeNav === 'quiz' ? 'active' : ''}`} onClick={() => scrollToSection('quiz')}>Quiz</button>
         </div>
