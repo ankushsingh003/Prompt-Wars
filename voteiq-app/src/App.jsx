@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import VotingPanel from './components/VotingPanel';
 import AuthModal from './components/AuthModal';
 import { useAuth } from './hooks/useAuth';
+import { useAnalytics } from './hooks/useAnalytics';
 import { getFallbackResponse, getQuizFeedback } from './utils/electionUtils';
 
 const SYSTEM_PROMPT = `You are VoteIQ, an expert AI assistant about India's election process. 
@@ -61,27 +62,39 @@ function App() {
   const [showResult, setShowResult] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { user, logout, loading: authLoading } = useAuth();
+  const { trackPageView, trackQuizComplete, trackChatQuery } = useAnalytics();
 
-  // Intersection Observers
+  // Intersection Observers — runs after paint so DOM is fully rendered
   useEffect(() => {
-    const fadeObs = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-    }, { threshold: 0.1 });
-    
-    const tlObs = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-    }, { threshold: 0.2 });
+    let cleanup = () => {};
+    const raf = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const fadeObs = new IntersectionObserver((entries) => {
+          entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.05 });
 
-    document.querySelectorAll('section, .fade-up').forEach(el => fadeObs.observe(el));
-    document.querySelectorAll('.tl-item').forEach((el, i) => {
-      el.style.transitionDelay = `${i * 0.1}s`;
-      tlObs.observe(el);
+        const tlObs = new IntersectionObserver((entries) => {
+          entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('section, .fade-up').forEach(el => {
+          const rect = el.getBoundingClientRect();
+          if (rect.top < window.innerHeight && rect.bottom > 0) {
+            el.classList.add('visible');
+          } else {
+            fadeObs.observe(el);
+          }
+        });
+
+        document.querySelectorAll('.tl-item').forEach((el, i) => {
+          el.style.transitionDelay = `${i * 0.1}s`;
+          tlObs.observe(el);
+        });
+
+        cleanup = () => { fadeObs.disconnect(); tlObs.disconnect(); };
+      });
     });
-
-    return () => {
-      fadeObs.disconnect();
-      tlObs.disconnect();
-    };
+    return () => { cancelAnimationFrame(raf); cleanup(); };
   }, []);
 
   // Scroll active nav
@@ -94,6 +107,7 @@ function App() {
         if (el && window.scrollY >= el.offsetTop - 100) current = id;
       });
       setActiveNav(current || 'hero');
+      if (current) trackPageView(current);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -155,6 +169,7 @@ function App() {
   const nextQuestion = () => {
     if (currentQ >= QUESTIONS.length - 1) {
       setShowResult(true);
+      trackQuizComplete(score + (selectedOpt === QUESTIONS[currentQ].ans ? 1 : 0), QUESTIONS.length);
     } else {
       setCurrentQ(prev => prev + 1);
       setAnswered(false);
@@ -187,6 +202,9 @@ function App() {
 
   return (
     <div className="app-container">
+      {/* Skip Navigation for keyboard/screen reader users */}
+      <a href="#main-content" className="skip-nav">Skip to main content</a>
+
       {/* NAV */}
       <nav>
         <div className="nav-logo">
@@ -213,6 +231,7 @@ function App() {
 
       {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
 
+      <main id="main-content">
       {/* HERO */}
       <section className="hero" id="hero">
         <div className="hero-bg"></div>
@@ -472,6 +491,8 @@ function App() {
           )}
         </div>
       </section>
+
+      </main>
 
       {/* FOOTER */}
       <footer>
