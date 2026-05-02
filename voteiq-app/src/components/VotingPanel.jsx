@@ -1,4 +1,7 @@
+import { useState, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { useWallet } from "../hooks/useWallet";
+import { useVoting } from "../hooks/useVoting";
 
 const PARTIES = [
   { name: "Indian National Congress", symbol: "✋", color: "#00BFFF", candidateId: 1 },

@@ -1,4 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
+import VotingPanel from './components/VotingPanel';
+import AuthModal from './components/AuthModal';
+import { useAuth } from './hooks/useAuth';
+import { getFallbackResponse, getQuizFeedback } from './utils/electionUtils';
 
 const SYSTEM_PROMPT = `You are VoteIQ, an expert AI assistant about India's election process. 
 You help citizens understand how elections work in India, covering:
@@ -36,11 +40,6 @@ const PARTIES = [
   { name: 'NOTA', symbol: '🚫', color: '#333' }
 ];
 
-import VotingPanel from './components/VotingPanel';
-import AuthModal from './components/AuthModal';
-import { useAuth } from './hooks/useAuth';
-import { getFallbackResponse, getQuizFeedback } from './utils/electionUtils';
-
 function App() {
   // Navigation State
   const [activeNav, setActiveNav] = useState('hero');
@@ -61,7 +60,7 @@ function App() {
   const [selectedOpt, setSelectedOpt] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, logout, loading: authLoading } = useAuth();
 
   // Intersection Observers
   useEffect(() => {
@@ -174,6 +173,17 @@ function App() {
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  if (authLoading) {
+    return (
+      <div style={{ 
+        height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', 
+        background: '#FAFAF7', color: '#FF6B00', fontFamily: 'serif', fontSize: '24px' 
+      }}>
+        <div className="loading-spinner">VoteIQ...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="app-container">
@@ -331,7 +341,10 @@ function App() {
       <div className="tricolor"><div className="s"></div><div className="w"></div><div className="g"></div></div>
 
       {/* BLOCKCHAIN SECURE VOTING */}
-      <VotingPanel />
+      {/* <VotingPanel /> */}
+      <div style={{ textAlign: 'center', padding: '40px', background: 'rgba(255,255,255,0.05)', borderRadius: '16px', border: '1px dashed rgba(255,255,255,0.1)' }}>
+        <p style={{ color: '#aaa' }}>Voting Panel is being updated. Please wait...</p>
+      </div>
 
 
       <div className="tricolor"><div className="s"></div><div className="w"></div><div className="g"></div></div>
