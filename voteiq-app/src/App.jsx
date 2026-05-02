@@ -213,22 +213,41 @@ function App() {
 
       {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
 
-      <div style={{ padding: '100px 5%', color: 'black', position: 'relative', zIndex: 9999 }}>
-        <h1 style={{ fontSize: '40px' }}>TEST CONTENT: Empowering Every Indian</h1>
-        <p>If you see this, the React rendering is working correctly.</p>
-      </div>
-
       {/* HERO */}
-      <section className="hero" id="hero" style={{ background: '#fff', color: '#000', padding: '100px 5%', textAlign: 'center' }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <h1 style={{ fontSize: '64px', marginBottom: '24px' }}>VoteIQ: India Election Guide</h1>
-          <p style={{ fontSize: '20px', marginBottom: '40px' }}>Your intelligent guide to understanding India's election process.</p>
-          <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
-            <button style={{ padding: '15px 30px', background: '#FF9933', color: '#fff', border: 'none', borderRadius: '30px', fontWeight: 'bold' }}>Ask AI Assistant</button>
-            <button style={{ padding: '15px 30px', border: '2px solid #138808', color: '#138808', background: 'none', borderRadius: '30px', fontWeight: 'bold' }}>View Process</button>
+      <section className="hero" id="hero">
+        <div className="hero-bg"></div>
+        <svg aria-hidden="true" className="hero-chakra" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="90" stroke="#000080" strokeWidth="3"/>
+          <circle cx="100" cy="100" r="10" fill="#000080"/>
+          <circle cx="100" cy="100" r="60" stroke="#000080" strokeWidth="1.5"/>
+          <line x1="100" y1="10" x2="100" y2="190" stroke="#000080" strokeWidth="1.2"/>
+          <line x1="10" y1="100" x2="190" y2="100" stroke="#000080" strokeWidth="1.2"/>
+          <line x1="26" y1="26" x2="174" y2="174" stroke="#000080" strokeWidth="1.2"/>
+          <line x1="174" y1="26" x2="26" y2="174" stroke="#000080" strokeWidth="1.2"/>
+          <line x1="63" y1="10" x2="137" y2="190" stroke="#000080" strokeWidth="0.8"/>
+          <line x1="137" y1="10" x2="63" y2="190" stroke="#000080" strokeWidth="0.8"/>
+          <line x1="10" y1="63" x2="190" y2="137" stroke="#000080" strokeWidth="0.8"/>
+          <line x1="10" y1="137" x2="190" y2="63" stroke="#000080" strokeWidth="0.8"/>
+          <line x1="37" y1="15" x2="163" y2="185" stroke="#000080" strokeWidth="0.5"/>
+          <line x1="163" y1="15" x2="37" y2="185" stroke="#000080" strokeWidth="0.5"/>
+          <line x1="15" y1="37" x2="185" y2="163" stroke="#000080" strokeWidth="0.5"/>
+          <line x1="15" y1="163" x2="185" y2="37" stroke="#000080" strokeWidth="0.5"/>
+        </svg>
+        <div className="hero-content fade-up">
+          <div className="hero-eyebrow">India Election Guide</div>
+          <h1 className="hero-title">
+            Democracy<br/>
+            <span className="line-saffron">Explained,</span><br/>
+            <span className="line-green">Simply.</span>
+          </h1>
+          <p className="hero-sub">Your intelligent guide to understanding India's election process — from voter registration to result declaration, powered by AI.</p>
+          <div className="hero-ctas">
+            <button aria-label="Ask the AI Assistant" className="btn-primary" onClick={() => scrollToSection('chatbot')}>Ask the AI ✦</button>
+            <button aria-label="Explore the Election Process" className="btn-outline" onClick={() => scrollToSection('process')}>Explore Process</button>
           </div>
-        </div>
-      </section>
+          <div className="hero-stats">
+            <div className="hero-stat"><div className="num">96.8Cr</div><div className="lbl">Registered Voters</div></div>
+            <div className="hero-stat"><div className="num">543</div><div className="lbl">Lok Sabha Seats</div></div>
             <div className="hero-stat"><div className="num">7</div><div className="lbl">Phase Election</div></div>
           </div>
         </div>
