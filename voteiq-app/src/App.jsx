@@ -37,6 +37,7 @@ const PARTIES = [
 ];
 
 import VotingPanel from './components/VotingPanel';
+import { getFallbackResponse, getQuizFeedback } from './utils/electionUtils';
 
 function App() {
   // Navigation State
@@ -96,25 +97,6 @@ function App() {
   }, []);
 
   // Chat Logic
-  const getFallbackResponse = (q) => {
-    q = q.toLowerCase();
-    if (q.includes('register') || q.includes('voter id') || q.includes('epic'))
-      return `📋 <strong>Voter Registration:</strong> You can register as a voter if you are an Indian citizen aged 18+. Fill <strong>Form 6</strong> on the National Voters' Service Portal (voters.eci.gov.in) or visit your local BLO (Booth Level Officer). You'll receive an <strong>EPIC card (Voter ID)</strong> within a few weeks. The last date to register is usually 2–3 months before election day.`;
-    if (q.includes('evm') || q.includes('electronic voting'))
-      return `⚡ <strong>EVMs (Electronic Voting Machines)</strong> are standalone battery-operated devices that record votes electronically. They consist of a <strong>Balloting Unit</strong> (where voters press buttons) and a <strong>Control Unit</strong> (operated by the polling officer). Since 2019, all EVMs are paired with <strong>VVPATs</strong> (Voter Verified Paper Audit Trail) so voters can verify their vote was recorded correctly on a paper slip.`;
-    if (q.includes('nota'))
-      return `🚫 <strong>NOTA (None Of The Above)</strong> was introduced in Indian elections in 2013 after a Supreme Court order. It allows voters to reject all candidates without abstaining. NOTA is the last option on the EVM ballot. However, even if NOTA gets the most votes, the candidate with the next highest votes still wins — NOTA doesn't invalidate the election.`;
-    if (q.includes('mcc') || q.includes('model code'))
-      return `⚖️ <strong>Model Code of Conduct (MCC)</strong> is a set of guidelines issued by the Election Commission of India that comes into force immediately when the election schedule is announced. It restricts the ruling government from announcing new policies, using government resources for campaigning, or making appointments that could influence voters. Violation of MCC can lead to show-cause notices or disqualification.`;
-    if (q.includes('lok sabha') || q.includes('vidhan sabha'))
-      return `🏛️ <strong>Lok Sabha</strong> elections are held every 5 years for 543 Parliamentary constituencies across India. The party/alliance with 272+ seats forms the central government. <strong>Vidhan Sabha</strong> elections are held for state assemblies — each state has its own number of seats. Both use the same First Past the Post (FPTP) system and are conducted by the Election Commission of India.`;
-    if (q.includes('document') || q.includes('id proof'))
-      return `🪪 On polling day, you need to carry your <strong>Voter ID (EPIC card)</strong> as the primary ID. If unavailable, the ECI also accepts 12 alternative documents: Aadhaar card, Passport, Driving Licence, PAN card, MNREGA Job Card, Health Insurance Smart Card, Pension document, NPR Smart Card, bank/post office passbook with photo, service ID cards, and disability certificate with photo.`;
-    if (q.includes('count') || q.includes('result'))
-      return `📊 <strong>Vote Counting:</strong> Votes are counted on a designated day, usually 1–3 days after polling ends. Counting happens at designated counting centres under strict ECI supervision. Votes from each constituency are counted round by round. The candidate with the highest votes wins (no minimum threshold needed). Results are declared constituency-wise and the ECI announces the final tally.`;
-    return `🇮🇳 <strong>VoteIQ</strong> is here to help! I can answer questions about voter registration, EVMs, Model Code of Conduct, NOTA, Lok Sabha & Vidhan Sabha elections, election timelines, and much more. To enable full AI responses, add your <strong>Google Gemini API key</strong>. Try asking a specific question about India's election process!`;
-  };
-
   const sendMessage = async (textOverride) => {
     const text = textOverride || chatInput.trim();
     if (!text || isTyping) return;
@@ -197,12 +179,12 @@ function App() {
           <span>Vote</span><span className="dot-saffron">I</span><span className="dot-green">Q</span>
         </div>
         <div className="nav-tabs">
-          <button className={`nav-tab ${activeNav === 'hero' ? 'active' : ''}`} onClick={() => scrollToSection('hero')}>Home</button>
-          <button className={`nav-tab ${activeNav === 'process' ? 'active' : ''}`} onClick={() => scrollToSection('process')}>Process</button>
-          <button className={`nav-tab ${activeNav === 'timeline' ? 'active' : ''}`} onClick={() => scrollToSection('timeline')}>Timeline</button>
-          <button className={`nav-tab ${activeNav === 'secure-voting' ? 'active' : ''}`} onClick={() => scrollToSection('secure-voting')}>Secure Voting</button>
-          <button className={`nav-tab ${activeNav === 'chatbot' ? 'active' : ''}`} onClick={() => scrollToSection('chatbot')}>Ask AI</button>
-          <button className={`nav-tab ${activeNav === 'quiz' ? 'active' : ''}`} onClick={() => scrollToSection('quiz')}>Quiz</button>
+          <button aria-label="Navigate to Home" className={`nav-tab ${activeNav === 'hero' ? 'active' : ''}`} onClick={() => scrollToSection('hero')}>Home</button>
+          <button aria-label="Navigate to Process" className={`nav-tab ${activeNav === 'process' ? 'active' : ''}`} onClick={() => scrollToSection('process')}>Process</button>
+          <button aria-label="Navigate to Timeline" className={`nav-tab ${activeNav === 'timeline' ? 'active' : ''}`} onClick={() => scrollToSection('timeline')}>Timeline</button>
+          <button aria-label="Navigate to Secure Voting" className={`nav-tab ${activeNav === 'secure-voting' ? 'active' : ''}`} onClick={() => scrollToSection('secure-voting')}>Secure Voting</button>
+          <button aria-label="Navigate to Ask AI" className={`nav-tab ${activeNav === 'chatbot' ? 'active' : ''}`} onClick={() => scrollToSection('chatbot')}>Ask AI</button>
+          <button aria-label="Navigate to Quiz" className={`nav-tab ${activeNav === 'quiz' ? 'active' : ''}`} onClick={() => scrollToSection('quiz')}>Quiz</button>
         </div>
         <div className="nav-badge">🇮🇳 India 2026</div>
       </nav>
@@ -210,7 +192,7 @@ function App() {
       {/* HERO */}
       <section className="hero" id="hero">
         <div className="hero-bg"></div>
-        <svg className="hero-chakra" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg aria-hidden="true" className="hero-chakra" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="100" cy="100" r="90" stroke="#000080" strokeWidth="3"/>
           <circle cx="100" cy="100" r="10" fill="#000080"/>
           <circle cx="100" cy="100" r="60" stroke="#000080" strokeWidth="1.5"/>
@@ -236,8 +218,8 @@ function App() {
           </h1>
           <p className="hero-sub">Your intelligent guide to understanding India's election process — from voter registration to result declaration, powered by AI.</p>
           <div className="hero-ctas">
-            <button className="btn-primary" onClick={() => scrollToSection('chatbot')}>Ask the AI ✦</button>
-            <button className="btn-outline" onClick={() => scrollToSection('process')}>Explore Process</button>
+            <button aria-label="Ask the AI Assistant" className="btn-primary" onClick={() => scrollToSection('chatbot')}>Ask the AI ✦</button>
+            <button aria-label="Explore the Election Process" className="btn-outline" onClick={() => scrollToSection('process')}>Explore Process</button>
           </div>
           <div className="hero-stats">
             <div className="hero-stat"><div className="num">96.8Cr</div><div className="lbl">Registered Voters</div></div>
@@ -360,11 +342,11 @@ function App() {
             <div className="chat-suggestions" style={{ marginTop: '24px' }}>
               <div className="sugg-label">Try asking:</div>
               <div className="sugg-chips">
-                {[
+                { [
                   'How do I register as a voter?', 'What is MCC?', 'How does EVM work?', 'What is NOTA?',
                   'Lok Sabha vs Vidhan Sabha', 'Who can contest?', 'Documents needed to vote', 'How votes are counted'
                 ].map((s, i) => (
-                  <div className="sugg-chip" key={i} onClick={() => sendMessage(s)}>{s}</div>
+                  <button aria-label={`Ask about ${s}`} className="sugg-chip" key={i} onClick={() => sendMessage(s)}>{s}</button>
                 ))}
               </div>
             </div>
@@ -404,8 +386,9 @@ function App() {
                   onChange={(e) => setChatInput(e.target.value)}
                   placeholder="Ask about India's election process…" 
                   onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+                  aria-label="Chat input"
                 />
-                <button className="chat-send" onClick={() => sendMessage()}>➤</button>
+                <button aria-label="Send message" className="chat-send" onClick={() => sendMessage()}>➤</button>
               </div>
               <div className="api-note">Add your Gemini API key in App.jsx to enable AI responses</div>
             </div>
@@ -436,6 +419,7 @@ function App() {
                     className={`quiz-opt ${answered ? (i === QUESTIONS[currentQ].ans ? 'correct' : (i === selectedOpt ? 'wrong' : '')) : ''}`}
                     onClick={() => selectAnswer(i)}
                     disabled={answered}
+                    aria-label={`Option ${i + 1}: ${o}`}
                   >
                     {o}
                   </button>
@@ -448,7 +432,7 @@ function App() {
                 </div>
               )}
               {answered && (
-                <button className="quiz-next" style={{ display: 'inline-block' }} onClick={nextQuestion}>
+                <button aria-label="Next question" className="quiz-next" style={{ display: 'inline-block' }} onClick={nextQuestion}>
                   {currentQ >= QUESTIONS.length - 1 ? 'See Results' : 'Next Question →'}
                 </button>
               )}
@@ -457,12 +441,9 @@ function App() {
             <div className="quiz-result" style={{ display: 'block' }}>
               <div className="quiz-score">{score}/{QUESTIONS.length}</div>
               <div className="quiz-score-label">
-                {score/QUESTIONS.length >= 0.875 ? '🏆 Excellent! You\'re an election expert!' :
-                 score/QUESTIONS.length >= 0.625 ? '👍 Good job! You know your democracy well.' :
-                 score/QUESTIONS.length >= 0.375 ? '📚 Not bad! Read up a bit more.' :
-                 '📖 Keep learning about your democratic rights!'}
+                {getQuizFeedback((score / QUESTIONS.length) * 100)}
               </div>
-              <button className="quiz-retry" onClick={resetQuiz}>Try Again 🔄</button>
+              <button aria-label="Retry quiz" className="quiz-retry" onClick={resetQuiz}>Try Again 🔄</button>
             </div>
           )}
         </div>

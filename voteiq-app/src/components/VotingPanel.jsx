@@ -56,7 +56,7 @@ export default function VotingPanel() {
       {/* 1. Firebase Login */}
       {!user ? (
         <div className="bc-connect-prompt">
-           <button className="btn-primary" onClick={signInWithGoogle}>
+           <button aria-label="Sign in with Google" className="btn-primary" onClick={signInWithGoogle}>
             🔑 Step 1: Sign in with Google
           </button>
           <p style={{ marginTop: '10px', fontSize: '12px', color: 'var(--ink-3)' }}>
@@ -68,7 +68,7 @@ export default function VotingPanel() {
           <div style={{ marginBottom: '15px', fontSize: '14px' }}>
             👋 Hello, <strong>{user.displayName}</strong>!
           </div>
-          <button className="btn-primary" onClick={connect} disabled={loading}>
+          <button aria-label="Connect MetaMask wallet" className="btn-primary" onClick={connect} disabled={loading}>
             {loading ? "Connecting..." : "🦊 Step 2: Connect MetaMask"}
           </button>
           {walletError && <p className="error-msg">{walletError}</p>}
@@ -87,15 +87,29 @@ export default function VotingPanel() {
                 <h3>Select Your Candidate</h3>
                 <div className="bc-candidates">
                   {PARTIES.map((p) => (
-                    <div
+                    <button
                       key={p.name}
                       className={`bc-candidate ${selected?.name === p.name ? "selected" : ""}`}
-                      style={{ borderColor: selected?.name === p.name ? p.color : "rgba(255,255,255,0.1)" }}
+                      style={{ 
+                        borderColor: selected?.name === p.name ? p.color : "rgba(255,255,255,0.1)",
+                        background: "transparent",
+                        cursor: "pointer",
+                        width: "100%",
+                        textAlign: "left",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                        padding: "10px",
+                        borderRadius: "8px",
+                        border: "1px solid"
+                      }}
                       onClick={() => setSelected(p)}
+                      aria-label={`Select ${p.name}`}
+                      aria-pressed={selected?.name === p.name}
                     >
-                      <span className="bc-symbol">{p.symbol}</span>
-                      <span className="bc-pname">{p.name}</span>
-                    </div>
+                      <span className="bc-symbol" aria-hidden="true">{p.symbol}</span>
+                      <span className="bc-pname" style={{ color: '#fff' }}>{p.name}</span>
+                    </button>
                   ))}
                 </div>
 
@@ -104,6 +118,7 @@ export default function VotingPanel() {
                   onClick={handleVote}
                   disabled={!selected || isSubmitting}
                   style={{ marginTop: '20px' }}
+                  aria-label={isSubmitting ? "Processing secure vote" : "Cast Secure Vote"}
                 >
                   {isSubmitting ? "⏳ Processing secure vote..." : "Cast Secure Vote 🔒"}
                 </button>
