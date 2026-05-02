@@ -22,10 +22,16 @@ export function useWallet() {
     setLoading(true);
     setError(null);
     try {
-      const ethProvider = await detectEthereumProvider();
-      if (!ethProvider) throw new Error("MetaMask not installed! Please install it.");
+      // Robust detection: check window.ethereum directly first
+      let ethProvider = window.ethereum;
+      
+      if (!ethProvider) {
+        ethProvider = await detectEthereumProvider();
+      }
 
-      const web3Provider = new BrowserProvider(window.ethereum);
+      if (!ethProvider) throw new Error("MetaMask not detected! Please ensure the extension is enabled and refresh the page.");
+
+      const web3Provider = new BrowserProvider(ethProvider);
 
       // Request accounts
       await web3Provider.send("eth_requestAccounts", []);
