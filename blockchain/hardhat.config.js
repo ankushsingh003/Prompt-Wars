@@ -1,9 +1,10 @@
-require("@nomicfoundation/hardhat-toolbox");
-require("dotenv").config();
+import "@nomicfoundation/hardhat-toolbox";
+import dotenv from "dotenv";
+dotenv.config();
 
 const { PRIVATE_KEY, ALCHEMY_POLYGON_URL, POLYGONSCAN_KEY } = process.env;
 
-module.exports = {
+export default {
   solidity: {
     version: "0.8.24",
     settings: { optimizer: { enabled: true, runs: 200 } }

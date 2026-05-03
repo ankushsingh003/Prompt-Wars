@@ -22,17 +22,19 @@ app.get("/health", (req, res) => res.json({ status: "ok", chain: "Polygon" }));
 const mongoUri = process.env.MONGODB_URI;
 const isValidMongo = mongoUri && (mongoUri.startsWith("mongodb://") || mongoUri.startsWith("mongodb+srv://"));
 
+const PORT = process.env.PORT || 4000;
+
 if (require.main === module) {
   if (isValidMongo) {
     mongoose.connect(mongoUri)
       .then(() => {
         console.log("✅ Connected to MongoDB");
-        app.listen(4000, () => console.log("🚀 Backend running on port 4000"));
+        app.listen(PORT, () => console.log(`🚀 Backend running on port ${PORT}`));
       })
       .catch(err => console.error("❌ MongoDB connection error:", err));
   } else {
     console.warn("⚠️ MONGODB_URI is invalid or a placeholder. Running without database persistence.");
-    app.listen(4000, () => console.log("🚀 Backend running on port 4000 (no DB)"));
+    app.listen(PORT, () => console.log(`🚀 Backend running on port ${PORT} (no DB)`));
   }
 }
 
