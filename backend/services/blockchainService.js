@@ -54,7 +54,7 @@ module.exports = {
       ["uint256", "uint256", "address"],
       [electionId, candidateId, voterAddress]
     );
-    const recovered = ethers.recoverAddress(ethers.hashMessage(msgHash), signature);
+    const recovered = ethers.recoverAddress(ethers.hashMessage(ethers.getBytes(msgHash)), signature);
     if (recovered.toLowerCase() !== voterAddress.toLowerCase()) {
       throw new Error("Invalid signature");
     }
