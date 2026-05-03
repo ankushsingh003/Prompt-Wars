@@ -25,7 +25,9 @@ export function useAuth() {
         try {
           const userRef = doc(db, "users", firebaseUser.uid);
           const snap = await getDoc(userRef);
-          setUser({ ...firebaseUser, profile: snap.exists() ? snap.data() : {} });
+          const userWithProfile = Object.assign(Object.create(Object.getPrototypeOf(firebaseUser)), firebaseUser);
+          userWithProfile.profile = snap.exists() ? snap.data() : {};
+          setUser(userWithProfile);
         } catch (e) {
           console.error("Error fetching user profile:", e);
           setUser(firebaseUser);
