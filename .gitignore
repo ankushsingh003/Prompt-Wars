@@ -1,0 +1,32 @@
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+.env
+.env.*
+!.env.example
+.vscode
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+C:/Users/ankush kumar singh/.gemini/antigravity/brain/35c0600d-f8d3-4404-8e2a-1c21d1a859da/*
+C:/Users/ankush kumar singh/.gemini/antigravity/knowledge/*
+
+# Integration Guide
+VoteIQ_Blockchain_Integration_Guide.html
+
+# Dependencies
+node_modules/
+backend/node_modules/
+blockchain/node_modules/
+
+# Local env files
+.env
+.env.local
+backend/.env
+blockchain/.env
+voteiq-app/.env
