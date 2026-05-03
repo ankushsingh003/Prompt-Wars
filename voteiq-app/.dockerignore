@@ -4,5 +4,5 @@ dist
 .gitignore
 *.md
 *.log
-.env*
+# .env* (Removed to allow Vite build-time injection)
 deploy.sh
